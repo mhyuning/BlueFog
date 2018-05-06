@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  
+  <title>BlueFog</title>
+</head>
+<body>
+  <div id="app"> 
+
+  	<h3>List</h3>
+  	
+  	<input v-model ="term">
+  	<ul>
+  		<li v-for="exp in allExceptTerm"> {{exp.name}} ♥ </li>
+  	</ul>
+
+  </div>
+</body>
+
+  <script>
+
+new Vue({
+
+	el: '#app',
+
+  data: {
+
+  	experiments: [
+
+    	{name: 'Rey I like you', field: 'Rey'},
+
+      {name: 'Moohyun I love you soooooo much', field: 'Moohyun'},
+
+      {name: 'Park I love you', field: 'Park'},
+
+
+
+    ],
+
+    term: ''
+
+  },
+
+  computed: {
+
+  	allExceptTerm () {
+
+    	return this.experiments.filter (exp => exp.field === this.term)
+
+    }
+
+  }
+
+})
+
+  </script>
+</html>
