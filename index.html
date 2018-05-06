@@ -1,2 +1,80 @@
-kfjnajweifiawe
-mmmmmmmmmmm
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>03-07</title>
+	<style>
+	    #list  { width: 600px; border:1px solid black; border-collapse:collapse; }
+	    #list td, #list th { border:1px solid black;  text-align:center; }
+	    #list > thead > tr { color:yellow; background-color: purple; }
+	</style>
+</head>
+<body>
+	<div id="example">
+		<p>
+			name : <input type="text" v-model="name" placeholder="please, input two characters more"/>
+		</p>
+		<table id="list">
+			<thead>
+				<tr>
+					<th>No</th><th>Name</th><th>Phone</th><th>Address</th>
+				</tr>
+			</thead>
+			<tbody id="contacts">
+				<tr v-for="contact in contactlist">
+					<td>{{contact.no}}</td>
+					<td>{{contact.name}}</td>
+					<td>{{contact.tel}}</td>
+					<td>{{contact.address}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div v-show="isProcessing === true">Searching......</div>
+	</div>
+
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<scrtip src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></scrtip>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+	<scrtip src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></scrtip>
+	<scrtip src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></scrtip>
+
+	<script type="text/javascript">
+		var vm = new Vue({
+			el : '#example',
+			data : {
+				name : "",
+				isProcessing : false,
+				contactlist : []
+			},
+			watch : {
+				name : function(val){
+					if(val.length >= 2){
+						this.fetchContacts();
+					}else{
+						this.contactlist = [];
+					}
+				}
+			},
+			methods :{
+				fetchContacts : _.debounce(function(){
+					this.contactlist = [];
+					this.isProcessing = true;
+					var url = "http://sample.bmaster.kro.kr/contacts_long/search/" + this.name;
+					var vm = this;
+					fetch(url)
+					.then(function(response) {
+						return response.json()
+					}).then(function(json){
+						vm.contactlist = json;
+						vm.isProcessing = false;
+					}).catch(function(ex){
+						console.log('parsing failed', ex);
+						vm.contactlist = [];
+						vm.isProcessing = false;
+					})
+				}, 300)
+			}
+		})
+	</script>
+</body>
+</html>
